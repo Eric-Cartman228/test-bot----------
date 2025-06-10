@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+.env.*
+.env
+
+# Aiogram & Python related
+*.log
+*.sqlite3
+instance/
+config.py
+
+# VS Code / PyCharm
+.vscode/
+.idea/
+
+# MyPy, Pytest, coverage, etc.
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Optional: Docker
+*.pid
+docker-compose.override.yml
+
+# Optional: Ignore telegram bot token file (if exists)
+bot_token.txt
