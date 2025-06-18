@@ -23,10 +23,12 @@ from aiogram.fsm.context import FSMContext
 
 from .delete_subs_from_user_admin import router as delete_subs_from_user_router
 
+from .get_all_data import router as get_all_data_router
+
 
 router = Router()
 
-router.include_router(delete_subs_from_user_router)
+router.include_routers(delete_subs_from_user_router, get_all_data_router)
 
 
 @router.callback_query(F.data == "govern_of_users")
