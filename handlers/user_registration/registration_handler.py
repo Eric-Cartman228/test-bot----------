@@ -38,11 +38,15 @@ async def cmd_start(message: Message, state: FSMContext, session: AsyncSession):
 
 @router.message(UserState.name)
 async def get_name(message: Message, state: FSMContext):
-    await state.update_data(name=message.text)
-    await message.answer(
-        "Спасибо! Теперь, пожалуйста, укажите\n ваш Email-адрес для связи:"
-    )
-    await state.set_state(UserState.email)
+    name = message.text
+    if name.isalpha():
+        await state.update_data(name=message.text)
+        await message.answer(
+            "Спасибо! Теперь, пожалуйста, укажите\n ваш Email-адрес для связи:"
+        )
+        await state.set_state(UserState.email)
+    else:
+        await message.answer("Ошибка!Введите ваше имя.")
 
 
 @router.message(UserState.email)
