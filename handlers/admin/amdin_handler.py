@@ -24,7 +24,7 @@ from .recover_subscription import router as recover_router
 from .delete_subscription import router as delete_router
 from .admin_govern_users import main_govern_users_router
 from .give_subscription_to_users import give_subs_to_user_router
-
+from .statistics import router as statistic_router
 
 router = Router()
 
@@ -38,6 +38,7 @@ router.include_routers(
     delete_router,
     main_govern_users_router,
     give_subs_to_user_router,
+    statistic_router,
 )
 
 
@@ -54,14 +55,6 @@ async def control_subs(callback: CallbackQuery, session: AsyncSession):
     await callback.answer()
     await callback.message.edit_text(
         "Управление подписками", reply_markup=second_ad_inlinekeyboard
-    )
-
-
-@router.callback_query(F.data == "statistics")
-async def control_subs1(callback: CallbackQuery, session: AsyncSession):
-    await callback.answer()
-    await callback.message.edit_text(
-        "Статистику сюда кинь потом", reply_markup=stat_ad_inlinekeyboard
     )
 
 

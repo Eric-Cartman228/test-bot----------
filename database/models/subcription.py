@@ -17,5 +17,7 @@ class Subcription(Base):
     )
     date_activate: Mapped[Date] = mapped_column(Date, nullable=True)
     date_expired: Mapped[Date] = mapped_column(Date, nullable=True)
+    ended_sub: Mapped[bool] = mapped_column(Boolean, default=False)
+    extend_subs: Mapped[bool] = mapped_column(Boolean, default=False)
 
     user = relationship("User", back_populates="subscriptions")
