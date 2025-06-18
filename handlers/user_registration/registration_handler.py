@@ -54,17 +54,22 @@ async def get_email(message: Message, state: FSMContext):
 
 @router.message(UserState.phone_number)
 async def get_phone_number(message: Message, state: FSMContext, session: AsyncSession):
-    await state.update_data(phone_number=message.text)
-    data = await state.get_data()
-    await state.clear()
-    await message.answer(
-        f"""Name:{data['name']}.\nEmail:{data['email']}.\nPhone number:{data['phone_number']}"""
-    )
-    await create_user(
-        message.from_user.id,
-        message.from_user.username,
-        data["name"],
-        data["email"],
-        data["phone_number"],
-        session,
-    )
+    phone = message.text
+    if phone.startswith("+") and phone[1:].isdigit():
+        await state.update_data(phone_number=message.text)
+        data = await state.get_data()
+        await state.clear()
+        await message.answer(
+            f"""Name:{data['name']}.\nEmail:{data['email']}.\nPhone number:{data['phone_number']}"""
+        )
+        await create_user(
+            message.from_user.id,
+            message.from_user.username,
+            data["name"],
+            data["email"],
+            data["phone_number"],
+            session,
+        )
+    else:
+        await message.answer("Ошибка!Введите ваш номер телефона!")
+        return

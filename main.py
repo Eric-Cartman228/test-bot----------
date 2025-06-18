@@ -20,7 +20,7 @@ from core import BOT_TOKEN
 async def lifespan():
     async with db_helper.engine.begin() as conn:
         # Optional: drop all tables
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     try:
         yield
