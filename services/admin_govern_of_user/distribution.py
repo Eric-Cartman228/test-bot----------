@@ -1,0 +1,22 @@
+from database.models import User, Subcription
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+async def get_all_users(session: AsyncSession):
+    users = await session.scalars(select(User.id))
+    return users.all()
+
+
+async def get_all_users_without_subc(session: AsyncSession):
+    users = await session.scalars(
+        select(User.id).where(~(User.subscriptions.any(Subcription.status == True)))
+    )
+    return users.all()
+
+
+async def get_all_users_with_subc(session: AsyncSession):
+    users = await session.scalars(
+        select(User.id).where(User.subscriptions.any(Subcription.status == True))
+    )
+    return users.all()

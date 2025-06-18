@@ -9,15 +9,25 @@ from aiogram.filters import CommandStart
 from aiogram import Router
 from services import check_func, create_user
 
+
+from .programms import programm_router
+from .users_subscription import subscription_checker_router
+
+from keyboards import main_kb_usesr
+
 router = Router()
+
+
+router.include_routers(programm_router, subscription_checker_router)
 
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext, session: AsyncSession):
-    reg_or_not = await check_func(message.from_user.id, session)
-    if reg_or_not:
+
+    if await check_func(message.from_user.id, session):
         await message.answer(
-            "👋 Добро пожаловать! Здесь вы можете узнать о подписках на наши программы и связаться с техподдержкой для их приобретения. Выберите нужное действие:"
+            "👋 Добро пожаловать! Здесь вы можете узнать о подписках на наши программы и связаться с техподдержкой для их приобретения. Выберите нужное действие:",
+            reply_markup=main_kb_usesr,
         )
     else:
         await message.answer(

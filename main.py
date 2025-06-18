@@ -9,7 +9,9 @@ from middleware import DBSessionMiddleware
 
 from database.models import Base
 
-from handlers import handlers_router, admin_router
+from handlers.user_registration import main_user_router
+from handlers.admin import admin_router
+
 from aiogram import Bot, Dispatcher
 from core import BOT_TOKEN
 
@@ -18,7 +20,7 @@ from core import BOT_TOKEN
 async def lifespan():
     async with db_helper.engine.begin() as conn:
         # Optional: drop all tables
-        await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     try:
         yield
@@ -52,7 +54,7 @@ logger = logging.getLogger(__name__)
 
 
 async def main():
-    dp.include_routers(handlers_router, admin_router)
+    dp.include_routers(main_user_router, admin_router)
     await dp.start_polling(bot)
 
 

@@ -16,10 +16,29 @@ from keyboards import (
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .add_subs import router as sub_router
+from .edit_subscriptions_name import router as edit_sub_router
+from .edit_subscription_desc import router as edit_sub_desc_router
+from .edit_subscription_channel import router as edit_channel_router
+from .hide_subscription import router as hide_subs_router
+from .recover_subscription import router as recover_router
+from .delete_subscription import router as delete_router
+from .admin_govern_users import main_govern_users_router
+from .give_subscription_to_users import give_subs_to_user_router
+
 
 router = Router()
 
-router.include_routers(sub_router)
+router.include_routers(
+    sub_router,
+    edit_sub_router,
+    edit_sub_desc_router,
+    edit_channel_router,
+    hide_subs_router,
+    recover_router,
+    delete_router,
+    main_govern_users_router,
+    give_subs_to_user_router,
+)
 
 
 @router.message(Command("admin"))
@@ -39,18 +58,10 @@ async def control_subs(callback: CallbackQuery, session: AsyncSession):
 
 
 @router.callback_query(F.data == "statistics")
-async def control_subs(callback: CallbackQuery, session: AsyncSession):
+async def control_subs1(callback: CallbackQuery, session: AsyncSession):
     await callback.answer()
     await callback.message.edit_text(
         "Статистику сюда кинь потом", reply_markup=stat_ad_inlinekeyboard
-    )
-
-
-@router.callback_query(F.data == "govern_of_users")
-async def govern_of_users(callback: CallbackQuery):
-    await callback.answer()
-    await callback.message.edit_text(
-        "Выберите нужное действие:", reply_markup=user_govern
     )
 
 

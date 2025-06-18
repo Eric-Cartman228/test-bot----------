@@ -14,3 +14,4 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(125))
     phone_number: Mapped[str] = mapped_column(String(20))
     username: Mapped[str] = mapped_column(String(60))
+    subscriptions = relationship("Subcription", back_populates="user")

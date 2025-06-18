@@ -1,5 +1,13 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from services import (
+    get_subscriptions,
+    get_subscriptions_all,
+    get_subscriptions_not_available,
+)
 
 # Control of subs
 first_keyboard = InlineKeyboardMarkup(
@@ -78,5 +86,119 @@ add_another_sub = InlineKeyboardMarkup(
             )
         ],
         [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")],
+    ]
+)
+
+# Builder For editing of subscriptions
+
+
+async def kb_subscriptions(session: AsyncSession):
+    all_subscriptions = await get_subscriptions_all(session)
+    keyboard = InlineKeyboardBuilder()
+    for subscription in all_subscriptions:
+        keyboard.row(
+            InlineKeyboardButton(
+                text=subscription, callback_data=f"edit_subscriptions:{subscription}"
+            )
+        )
+    keyboard.row(InlineKeyboardButton(text="Назад", callback_data="control_of_subs"))
+    return keyboard.as_markup()
+
+
+edit_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Название", callback_data="edit_sub_name")],
+        [InlineKeyboardButton(text="Описание", callback_data="edit_sub_desc")],
+        [InlineKeyboardButton(text="Каналы/Группы", callback_data="edit_sub_channel")],
+        [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")],
+    ]
+)
+
+back_but = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")]
+    ]
+)
+
+
+##Для скрытия подписки
+async def kb_not_hide_subscriptions(session: AsyncSession):
+    all_subscriptions = await get_subscriptions(session)
+    keyboard = InlineKeyboardBuilder()
+    for subscription in all_subscriptions:
+        keyboard.row(
+            InlineKeyboardButton(
+                text=subscription, callback_data=f"hide_subscriptions:{subscription}"
+            )
+        )
+    keyboard.row(InlineKeyboardButton(text="Назад", callback_data="control_of_subs"))
+    return keyboard.as_markup()
+
+
+# Для раскрытия подписки
+async def kb_hide_subscriptions(session: AsyncSession):
+    all_subscriptions = await get_subscriptions_not_available(session)
+    keyboard = InlineKeyboardBuilder()
+    for subscription in all_subscriptions:
+        keyboard.row(
+            InlineKeyboardButton(
+                text=subscription, callback_data=f"make_sub_visible:{subscription}"
+            )
+        )
+    keyboard.row(InlineKeyboardButton(text="Назад", callback_data="control_of_subs"))
+    return keyboard.as_markup()
+
+
+# for deleting a subscription
+async def kb_delete_subscriptions(session: AsyncSession):
+    all_subscriptions = await get_subscriptions_all(session)
+    keyboard = InlineKeyboardBuilder()
+    for subscription in all_subscriptions:
+        keyboard.row(
+            InlineKeyboardButton(
+                text=subscription, callback_data=f"del_subscriptions:{subscription}"
+            )
+        )
+    keyboard.row(InlineKeyboardButton(text="Назад", callback_data="control_of_subs"))
+    return keyboard.as_markup()
+
+
+# delete_choice
+delete_choice = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Подтвердить удаление", callback_data="accept_del")],
+        [InlineKeyboardButton(text="Отмена", callback_data="control_of_subs")],
+    ]
+)
+
+broadcast_handler_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Посмотреть список пользователей",
+                callback_data="watch_list_of_users",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Назначить подписки пользователю",
+                callback_data="give_subs_to_user",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Удалить подписки у пользователя",
+                callback_data="delete_subs_from_user",
+            )
+        ],
+        [InlineKeyboardButton(text="Рассылка", callback_data="distribution")],
+        [InlineKeyboardButton(text="Назад", callback_data="back_to_main_menu")],
+    ]
+)
+
+
+back_but_govern_of_users = back_but = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")]
     ]
 )
