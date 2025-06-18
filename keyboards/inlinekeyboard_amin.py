@@ -202,3 +202,11 @@ back_but_govern_of_users = back_but = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")]
     ]
 )
+
+
+menue_in_list_users = back_but = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Отправить файл", callback_data="send_file")],
+        [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")],
+    ]
+)
