@@ -54,7 +54,7 @@ async def get_email(message: Message, state: FSMContext):
 
 @router.message(UserState.phone_number)
 async def get_phone_number(message: Message, state: FSMContext, session: AsyncSession):
-    phone = message.text
+    phone = message.text.strip()
     if phone.startswith("+") and phone[1:].isdigit():
         await state.update_data(phone_number=message.text)
         data = await state.get_data()
