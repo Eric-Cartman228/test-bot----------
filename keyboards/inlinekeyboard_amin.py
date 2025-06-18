@@ -210,3 +210,21 @@ menue_in_list_users = back_but = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")],
     ]
 )
+
+
+menue = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="statistics")]]
+)
+
+
+async def statistic_kb_builder(session: AsyncSession):
+    all_subscriptions = await get_subscriptions(session)
+    keyboard = InlineKeyboardBuilder()
+    for subscription in all_subscriptions:
+        keyboard.row(
+            InlineKeyboardButton(
+                text=subscription, callback_data=f"stat_kb_sub:{subscription}"
+            )
+        )
+    keyboard.row(InlineKeyboardButton(text="Назад", callback_data="statistics"))
+    return keyboard.as_markup()

@@ -1,4 +1,4 @@
-from database.models import User, Subcription
+from database.models import User, Subcription, UserSubcriptions
 
 from sqlalchemy import select, func
 
@@ -11,24 +11,24 @@ async def get_statistics(session: AsyncSession):
 
     subscribers_count = await session.scalar(
         select(func.count())
-        .select_from(Subcription)
-        .where(Subcription.user_id.isnot(None))
+        .select_from(UserSubcriptions)
+        .where(UserSubcriptions.user_id.isnot(None))
     )
 
     ending_subs_count = await session.scalar(
         select(func.count())
-        .select_from(Subcription)
-        .where(Subcription.ended_sub == True)
+        .select_from(UserSubcriptions)
+        .where(UserSubcriptions.ended_sub == True)
     )
 
     finished_subs_count = await session.scalar(
-        select(func.count()).select_from(Subcription).where(Subcription.status == False)
+        select(func.count()).select_from(UserSubcriptions)
     )
 
     extended_subs_count = await session.scalar(
         select(func.count())
-        .select_from(Subcription)
-        .where(Subcription.extend_subs == True)
+        .select_from(UserSubcriptions)
+        .where(UserSubcriptions.extend_subs == True)
     )
 
     return {

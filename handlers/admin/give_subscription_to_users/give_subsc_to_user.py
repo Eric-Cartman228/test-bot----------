@@ -1,6 +1,8 @@
-from aiogram import F, Router
+import os
+from aiogram import F, Router, types
 
 from aiogram.types import CallbackQuery, Message
+import pandas as pd
 
 from states import GetId
 
@@ -27,7 +29,7 @@ async def main_menue(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
         """
 Пожалуйста, введите юзернайм или ID 
-пользователя, либо отправьте файл с данными
+пользователя
 """
     )
     await state.set_state(GetId.id)

@@ -63,7 +63,7 @@ async def get_sub_name(
 ):
     sub_name = callback.data.replace("del_subsc_users:", "")
     await state.update_data(sub_name=sub_name)
-    await make_null(sub_name, session)
+    await make_null(int(sub_name), session)
     await state.clear()
     await callback.message.edit_text(
         f"Подписка {sub_name} успешно удалена у пользователя",

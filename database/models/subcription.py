@@ -12,12 +12,4 @@ class Subcription(Base):
     description: Mapped[str] = mapped_column(String(120))
     channel_id: Mapped[list[str]] = mapped_column(ARRAY(String))
     status: Mapped[bool] = mapped_column(Boolean, nullable=True, default=True)
-    user_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("users.id"), nullable=True
-    )
-    date_activate: Mapped[Date] = mapped_column(Date, nullable=True)
-    date_expired: Mapped[Date] = mapped_column(Date, nullable=True)
-    ended_sub: Mapped[bool] = mapped_column(Boolean, default=False)
-    extend_subs: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    user = relationship("User", back_populates="subscriptions")
+    subscriptions = relationship("UserSubcriptions", back_populates="subscription")

@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy import select
 
-from database.models import Subcription, User
+from database.models import Subcription, User, UserSubcriptions
 
 
 async def get_all_data(session: AsyncSession):
@@ -12,9 +12,9 @@ async def get_all_data(session: AsyncSession):
         User.phone_number,
         User.email,
         Subcription.name,
-        Subcription.date_activate,
-        Subcription.date_expired,
-    ).outerjoin(Subcription, Subcription.user_id == User.id)
+        UserSubcriptions.date_activate,
+        UserSubcriptions.date_expired,
+    ).outerjoin(UserSubcriptions, UserSubcriptions.user_id == User.id)
     result = await session.execute(stmt)
     all_user_data = result.all()
     return all_user_data

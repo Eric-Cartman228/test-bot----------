@@ -1,12 +1,13 @@
-from database.models import Subcription
-
+from database.models import Subcription, UserSubcriptions
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from sqlalchemy import select
 
 
 async def get_users_subscriptions(id: int, session: AsyncSession):
-    subcriptions = await session.scalars(
-        select(Subcription.name).where(Subcription.user_id == id)
+    stmt = (
+        select(Subcription)
+        .join(UserSubcriptions, Subcription.id == UserSubcriptions.subscription_id)
+        .where(UserSubcriptions.user_id == id)
     )
-    return subcriptions.all()
+    result = await session.scalars(stmt)
+    return result.all()

@@ -1,3 +1,4 @@
+import os
 import io
 import logging
 import asyncio
@@ -125,3 +126,4 @@ async def send_users_file(callback: CallbackQuery, data):
         )
 
     output.close()
+    os.remove(file.filename)

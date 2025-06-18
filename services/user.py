@@ -1,7 +1,7 @@
 from database.models import User
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models import Subcription
+from database.models import Subcription, UserSubcriptions
 
 
 async def check_func(tg_id: int, session: AsyncSession):
@@ -60,10 +60,13 @@ async def get_channels_prog(name: str, session: AsyncSession):
 
 # to get user`s subscriptions
 async def get_user_subscriptions(id: int, session: AsyncSession):
-    subscriptions = await session.scalars(
-        select(Subcription.name).where(Subcription.user_id == id)
+    stmt = (
+        select(Subcription.name)
+        .join(UserSubcriptions, Subcription.id == UserSubcriptions.subscription_id)
+        .where(UserSubcriptions.user_id == id)
     )
-    return subscriptions.all()
+    result = await session.scalars(stmt)
+    return result.all()
 
 
 # to get channels for user last step
