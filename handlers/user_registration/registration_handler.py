@@ -64,7 +64,8 @@ async def get_phone_number(message: Message, state: FSMContext, session: AsyncSe
         data = await state.get_data()
         await state.clear()
         await message.answer(
-            f"""Name:{data['name']}.\nEmail:{data['email']}.\nPhone number:{data['phone_number']}"""
+            f"""Name:{data['name']}.\nEmail:{data['email']}.\nPhone number:{data['phone_number']}""",
+            reply_markup=main_kb_usesr,
         )
         await create_user(
             message.from_user.id,
