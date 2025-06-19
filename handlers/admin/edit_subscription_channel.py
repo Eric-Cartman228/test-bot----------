@@ -19,6 +19,7 @@ async def send_sub_channel(
 ):
     data = await state.get_data()
     ls_channels = await get_channels(session)
+    ls_channels = ls_channels[0]
     channels_lines = (
         f"{1+i}.Канал {i+1}: {channel}" for i, channel in enumerate(ls_channels)
     )

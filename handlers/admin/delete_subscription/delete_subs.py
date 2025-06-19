@@ -9,7 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from services import delete_subs
 
-from keyboards import kb_delete_subscriptions, delete_choice, back_but
+from keyboards import (
+    kb_delete_subscriptions,
+    delete_choice,
+    back_but_for_edit_name,
+)
 
 router = Router()
 
@@ -47,5 +51,5 @@ async def deleting_process(
 Подписка ≪{data['sub_name']}»
 успешно удалена.
 """,
-        reply_markup=back_but,
+        reply_markup=back_but_for_edit_name,
     )

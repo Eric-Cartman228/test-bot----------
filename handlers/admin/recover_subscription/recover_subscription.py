@@ -12,7 +12,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from services import recover_subs
 
-from keyboards import back_but
+from keyboards import (
+    back_but_for_hide_subscription as back_but_for_recover_subscription,
+)
 
 router = Router()
 
@@ -34,5 +36,5 @@ async def get_name_of_hidden_subsc(
     await state.update_data(sub_name=sub_name)
     await callback.message.answer(
         f"Подписка «{sub_name}» успешно\nвосстановлена и восстановлена и снова доступна\n пользователям.",
-        reply_markup=back_but,
+        reply_markup=back_but_for_recover_subscription,
     )

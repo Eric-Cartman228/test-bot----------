@@ -32,7 +32,7 @@ async def kb_programms_user(session: AsyncSession):
             )
         )
     keyboard.row(
-        InlineKeyboardButton(text="Назад", callback_data="go_back_to_main_menu_user")
+        InlineKeyboardButton(text="🔙Назад", callback_data="go_back_to_main_menu_user")
     )
     return keyboard.as_markup()
 
@@ -44,7 +44,7 @@ last_kb_programms = InlineKeyboardMarkup(
                 text="Связаться с тех.поддержкой", url="https://t.me/EvaristeGalois1811"
             )
         ],
-        [InlineKeyboardButton(text="Назад", callback_data="programm")],
+        [InlineKeyboardButton(text="🔙Назад", callback_data="programm")],
     ]
 )
 
@@ -62,11 +62,11 @@ async def user_subscription_checker_kb(session: AsyncSession):
         )
     keyboard.row(
         InlineKeyboardButton(
-            text="➕Продлить подписку", callback_data="extend_subscription"
+            text="➕Продлить подписку", url="https://t.me/EvaristeGalois1811"
         )
     )
     keyboard.row(
-        InlineKeyboardButton(text="Назад", callback_data="go_back_to_main_menu_user"),
+        InlineKeyboardButton(text="🔙Назад", callback_data="go_back_to_main_menu_user"),
     )
     return keyboard.as_markup()
 
@@ -79,7 +79,11 @@ user_subsc_last_kb_do_not_have_subs = InlineKeyboardMarkup(
                 text="Связаться с тех.поддержкой", url="https://t.me/EvaristeGalois1811"
             )
         ],
-        [InlineKeyboardButton(text="Назад", callback_data="go_back_to_main_menu_user")],
+        [
+            InlineKeyboardButton(
+                text="🔙Назад", callback_data="go_back_to_main_menu_user"
+            )
+        ],
     ]
 )
 
@@ -99,6 +103,6 @@ async def user_channel_last_kb(name: str, session: AsyncSession):
             )
         )
     keyboard.row(
-        InlineKeyboardButton(text="Назад", callback_data="my_subcription"),
+        InlineKeyboardButton(text="🔙Назад", callback_data="my_subcription"),
     )
     return keyboard.as_markup()

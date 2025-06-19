@@ -105,7 +105,7 @@ async def kb_subscriptions(session: AsyncSession):
     return keyboard.as_markup()
 
 
-edit_kb = InlineKeyboardMarkup(
+edit_kb_sub_name = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Название", callback_data="edit_sub_name")],
         [InlineKeyboardButton(text="Описание", callback_data="edit_sub_desc")],
@@ -114,7 +114,7 @@ edit_kb = InlineKeyboardMarkup(
     ]
 )
 
-back_but = InlineKeyboardMarkup(
+back_but_for_edit_name = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")]
     ]
@@ -196,18 +196,22 @@ broadcast_handler_kb = InlineKeyboardMarkup(
     ]
 )
 
-
 back_but_govern_of_users = back_but = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")]
     ]
 )
 
-
-menue_in_list_users = back_but = InlineKeyboardMarkup(
+back_but_edit_desc = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Отправить файл", callback_data="send_file")],
-        [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")],
+        [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")]
+    ]
+)
+
+
+back_but_for_hide_subscription = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")],
     ]
 )
 
@@ -228,3 +232,11 @@ async def statistic_kb_builder(session: AsyncSession):
         )
     keyboard.row(InlineKeyboardButton(text="Назад", callback_data="statistics"))
     return keyboard.as_markup()
+
+
+# menue_in_list_users = back_but = InlineKeyboardMarkup(
+#     inline_keyboard=[
+#         [InlineKeyboardButton(text="Отправить файл", callback_data="send_file")],
+#         [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")],
+#     ]
+# )

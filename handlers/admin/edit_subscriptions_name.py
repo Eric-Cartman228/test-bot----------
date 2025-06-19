@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram import F, Router
 from services import change_name
 
-from keyboards import kb_subscriptions, edit_kb, back_but
+from keyboards import kb_subscriptions, edit_kb_sub_name, back_but_for_edit_name
 
 from states import EditName
 
@@ -28,7 +28,8 @@ async def edit_subscription(callback: CallbackQuery, state: FSMContext):
     sub_name = callback.data.replace("edit_subscriptions:", "")
     await state.update_data(sub_name=sub_name)
     await callback.message.answer(
-        f"Что вы хотите изменить в подписке\n«{sub_name}»", reply_markup=edit_kb
+        f"Что вы хотите изменить в подписке\n«{sub_name}»",
+        reply_markup=edit_kb_sub_name,
     )
 
 
@@ -49,5 +50,5 @@ async def edit_name(message: Message, state: FSMContext, session: AsyncSession):
     await change_name(data1["name"], data1["sub_name"], session)
     await message.answer(
         f'Название подписки успешно изменено на\n "{data1['name']}"',
-        reply_markup=back_but,
+        reply_markup=back_but_for_edit_name,
     )

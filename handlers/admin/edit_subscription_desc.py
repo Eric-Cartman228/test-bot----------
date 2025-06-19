@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram import F, Router
 from services import change_desc
 
-from keyboards import back_but
+from keyboards import back_but_edit_desc
 from states import EditDesc
 
 
@@ -31,5 +31,5 @@ async def edit_name(message: Message, state: FSMContext, session: AsyncSession):
     await change_desc(data1["desc"], data1["sub_name"], session)
     await message.answer(
         f'Описание подписки успешно изменено на\n "{data1['desc']}"',
-        reply_markup=back_but,
+        reply_markup=back_but_edit_desc,
     )

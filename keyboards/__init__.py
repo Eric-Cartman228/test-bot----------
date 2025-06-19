@@ -5,7 +5,7 @@ from .inlinekeyboard_amin import (
     user_govern,
     add_another_sub,
     kb_subscriptions,
-    edit_kb,
+    edit_kb_sub_name,
     back_but,
     kb_not_hide_subscriptions,
     kb_hide_subscriptions,
@@ -13,9 +13,11 @@ from .inlinekeyboard_amin import (
     delete_choice,
     broadcast_handler_kb,
     back_but_govern_of_users,
-    menue_in_list_users,
     menue,
     statistic_kb_builder,
+    back_but_for_edit_name,
+    back_but_for_hide_subscription,
+    back_but_edit_desc,
 )
 
 from .admin_kb_govern_of_users.give_subscription_to_users_kb import (
