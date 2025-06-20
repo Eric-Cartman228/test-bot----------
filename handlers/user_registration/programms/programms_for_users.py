@@ -1,14 +1,18 @@
 from aiogram.fsm.context import FSMContext
 
 from aiogram import Router, F
+
 from aiogram.types import CallbackQuery, Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from services import get_subscriptions, get_desc, get_channels_prog
 
-
 from keyboards import kb_programms_user, main_kb_usesr, last_kb_programms
+
+from sqlalchemy import select
+
+from database.models import Subcription
 
 router = Router()
 
@@ -31,14 +35,29 @@ async def send_massege(callback: CallbackQuery, session: AsyncSession):
 async def get_name_of_sub_programm(
     callback: CallbackQuery, state: FSMContext, session: AsyncSession
 ):
+    from main import bot
+
     sub_name = callback.data.replace("subscription_user_program:", "")
     await state.update_data(sub_name=sub_name)
-    desc = await get_desc(sub_name, session)
-    channels = await get_channels_prog(sub_name, session)
-    channel_lines = (f"-Канал {1+i}:{channel}" for i, channel in enumerate(channels))
-    text = (
-        f"{sub_name}\n\n Описание:{desc}\n Включенный каналы и группы:\n"
-        + "\n".join(channel_lines)
+
+    sub = await session.scalar(select(Subcription).where(Subcription.name == sub_name))
+    desc = sub.description
+    channels = sub.channel_id  # массив строк
+
+    print(f"Каналы из базы: {channels}")
+
+    channel_lines = []
+    for i, channel in enumerate(channels):
+        try:
+            chat = await bot.get_chat(channel)
+            username = chat.username or chat.title or f"ID {chat.id}"
+            channel_lines.append(f"- Канал {i + 1}: {username}")
+        except Exception as e:
+            print(f"Не удалось получить чат {channel}: {e}")
+            channel_lines.append(f"- Канал {i + 1}: (не найден или нет доступа)")
+
+    text = f"{sub_name}\n\nОписание: {desc}\nВключенные каналы и группы:\n" + "\n".join(
+        channel_lines
     )
     await callback.message.edit_text(text, reply_markup=last_kb_programms)
 

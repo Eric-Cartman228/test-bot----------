@@ -1,12 +1,16 @@
 import os
+
 from aiogram import F, Router, types
 
 from aiogram.types import CallbackQuery, Message
+
 import pandas as pd
 
 from states import GetId
 
 from services import check_func, chenck_func_user_name, get_user_id_by_username
+
+from services.admin_govern_of_user import insert_subs_from_table
 
 from aiogram.fsm.context import FSMContext
 
@@ -16,7 +20,11 @@ from keyboards import kb_list_subscriptions
 
 from services import insert_subs
 
-from keyboards import amount_of_days, back_button_for_give_subs
+from keyboards import (
+    amount_of_days,
+    back_button_for_give_subs,
+    back_but_govern_of_users,
+)
 
 from states import GetDays
 
@@ -29,7 +37,7 @@ async def main_menue(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
         """
 Пожалуйста, введите юзернайм или ID 
-пользователя
+пользователя, либо отправьте файл с данными.
 """
     )
     await state.set_state(GetId.id)
@@ -37,31 +45,76 @@ async def main_menue(callback: CallbackQuery, state: FSMContext):
 
 @router.message(GetId.id)
 async def get_id(message: Message, state: FSMContext, session: AsyncSession):
-    list_of_chosen_tarrifs = []
-    try:
-        if not await check_func(int(message.text), session):
-            await message.answer("Такого пользователя нет!Введите заново ")
+    from main import bot
+
+    if not message.document:
+        list_of_chosen_tarrifs = []
+        try:
+
+            if not await check_func(int(message.text), session):
+                await message.answer("Такого пользователя нет!Введите заново ")
+                return
+            await state.clear()
+            await state.update_data(id=message.text)
+            await state.update_data(list_of_chosen_tarrifs=list_of_chosen_tarrifs)
+            data = await state.get_data()
+            await message.answer(
+                f"Выберите подписки, а затем нажмите готово:",
+                reply_markup=await kb_list_subscriptions(
+                    session, list_of_chosen_tarrifs
+                ),
+            )
+        except:
+            if not await chenck_func_user_name(message.text, session):
+                await message.answer("Такого пользователя нет!Введите заново ")
+                return
+            await state.clear()
+            id = await get_user_id_by_username(message.text, session)
+            await state.update_data(id=id)
+            await state.update_data(list_of_chosen_tarrifs=list_of_chosen_tarrifs)
+            data = await state.get_data()
+            await message.answer(
+                f"Выберите подписки, а затем нажмите готово:",
+                reply_markup=await kb_list_subscriptions(
+                    session, list_of_chosen_tarrifs
+                ),
+            )
+    else:
+        file_name = message.document.file_name
+        if not file_name.endswith(".xlsx"):
+            await message.answer("Ошибка! Данный файл не является форматом excel.")
             return
-        await state.clear()
-        await state.update_data(id=message.text)
-        await state.update_data(list_of_chosen_tarrifs=list_of_chosen_tarrifs)
-        data = await state.get_data()
-        await message.answer(
-            f"Выберите подписки, а затем нажмите готово:",
-            reply_markup=await kb_list_subscriptions(session, list_of_chosen_tarrifs),
-        )
-    except:
-        if not await chenck_func_user_name(message.text, session):
-            await message.answer("Такого пользователя нет!Введите заново ")
+        file = await bot.get_file(message.document.file_id)
+        file_path = file.file_path
+        dest = f"./{file_name}"
+        await bot.download_file(file_path, dest)
+        await message.answer("файл успешно скачан")
+        file_excel = pd.read_excel(f"{file_name}")
+        columns = file_excel.columns
+        if not (
+            (
+                "Почта" in columns
+                or "ФИО" in columns
+                or "Телефон" in columns
+                or "Юзернейм" in columns
+            )
+            & ("Название подписки" in columns)
+            & ("Срок" in columns)
+        ):
+            await message.answer("Отправленная таблица неправильная!")
+            os.remove(dest)
             return
-        await state.clear()
-        id = await get_user_id_by_username(message.text, session)
-        await state.update_data(id=id)
-        await state.update_data(list_of_chosen_tarrifs=list_of_chosen_tarrifs)
-        data = await state.get_data()
+        data_list, user_col_name = extract_data_as_list_of_dicts(file_excel)
+        if data_list is None:
+            await message.answer(
+                "Отправленная таблица неправильная! Обязательные колонки отсутствуют."
+            )
+            os.remove(dest)
+            return
+        await insert_subs_from_table(data_list, session)
         await message.answer(
-            f"Выберите подписки, а затем нажмите готово:",
-            reply_markup=await kb_list_subscriptions(session, list_of_chosen_tarrifs),
+            "Подписка успешно назначена всем пользователям из файла.",
+            reply_markup=back_but_govern_of_users,
         )
 
 
@@ -121,3 +174,37 @@ async def catch_days(callback: CallbackQuery, state: FSMContext, session: AsyncS
         f"Подписка успешно назначена пользователю на {nums_days} дней.",
         reply_markup=back_button_for_give_subs,
     )
+
+
+def extract_data_as_list_of_dicts(df):
+    """
+    Преобразует DataFrame в список словарей с данными пользователя, подписки и срока.
+
+    :param df: pandas DataFrame
+    :return: tuple (list словарей, имя колонки с данными пользователя) или (None, None)
+    """
+    required_columns = {"Название подписки", "Срок"}
+    if not required_columns.issubset(df.columns):
+        return None, None
+
+    user_columns = ["Юзернейм", "Телефон", "Почта", "ФИО"]
+    user_col_name = None
+    for col in user_columns:
+        if col in df.columns:
+            user_col_name = col
+            break
+
+    if user_col_name is None:
+        return None, None
+
+    result = []
+    for _, row in df.iterrows():
+        result.append(
+            {
+                "user_value": row[user_col_name],
+                "sub_name": row["Название подписки"],
+                "duration": row["Срок"],
+            }
+        )
+
+    return result, user_col_name

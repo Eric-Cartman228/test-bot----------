@@ -25,6 +25,7 @@ from .delete_subs_from_user_admin import router as delete_subs_from_user_router
 
 from .get_all_data import router as get_all_data_router
 
+from keyboards import get_back_to_list_dist, get_back_to_all_users
 
 router = Router()
 
@@ -57,8 +58,9 @@ async def destribution_menu(callback: CallbackQuery):
 async def destribution_handler(
     callback: CallbackQuery, session: AsyncSession, state: FSMContext
 ):
-    await callback.message.answer(
-        f"Вы выбрали сегмент: 'Все пользователи'.\n Пожалуйста, введите текст сообщения для рассылки."
+    await callback.message.edit_text(
+        f"Вы выбрали сегмент: 'Все пользователи'.\n Пожалуйста, введите текст сообщения для рассылки.",
+        reply_markup=get_back_to_list_dist,
     )
     await state.set_state(Distribution.all_users)
 
@@ -79,7 +81,8 @@ async def broadcast_handler_users(
         except:
             erros += 1
     await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'."
+        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+        reply_markup=get_back_to_list_dist,
     )
 
 
@@ -87,8 +90,9 @@ async def broadcast_handler_users(
 async def destribution_handler_without_subsc(
     callback: CallbackQuery, session: AsyncSession, state: FSMContext
 ):
-    await callback.message.answer(
-        f"Вы выбрали сегмент: 'Пользователи без подписки'.\n Пожалуйста, введите текст сообщения для рассылки."
+    await callback.message.edit_text(
+        f"Вы выбрали сегмент: 'Пользователи без подписки'.\n Пожалуйста, введите текст сообщения для рассылки.",
+        reply_markup=get_back_to_list_dist,
     )
     await state.set_state(Distribution.without_subscription)
 
@@ -109,14 +113,16 @@ async def broadcast_handler_users_without_subscription(
         except:
             erros += 1
     await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Пользователи без подписок'."
+        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Пользователи без подписок'.",
+        reply_markup=get_back_to_list_dist,
     )
 
 
 @router.callback_query(F.data == "with_subsc")
 async def destribution_handler_with_subsc(callback: CallbackQuery, state: FSMContext):
-    await callback.message.answer(
-        f"Вы выбрали сегмент: 'Пользователи подписки'.\n Пожалуйста, введите текст сообщения для рассылки."
+    await callback.message.edit_text(
+        f"Вы выбрали сегмент: 'Пользователи подписки'.\n Пожалуйста, введите текст сообщения для рассылки.",
+        reply_markup=get_back_to_list_dist,
     )
     await state.set_state(Distribution.with_subscription)
 
@@ -137,5 +143,6 @@ async def broadcast_handler_users_with_subscription(
         except:
             erros += 1
     await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'С подпиской'."
+        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'С подпиской'.",
+        reply_markup=get_back_to_list_dist,
     )

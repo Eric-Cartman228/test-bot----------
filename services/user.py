@@ -1,5 +1,5 @@
 from database.models import User
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import Subcription, UserSubcriptions
 
@@ -63,7 +63,12 @@ async def get_user_subscriptions(id: int, session: AsyncSession):
     stmt = (
         select(Subcription.name)
         .join(UserSubcriptions, Subcription.id == UserSubcriptions.subscription_id)
-        .where(UserSubcriptions.user_id == id)
+        .where(
+            UserSubcriptions.user_id == id,
+            UserSubcriptions.ended_sub == False,
+            UserSubcriptions.date_activate <= func.current_date(),
+            UserSubcriptions.date_expired >= func.current_date(),
+        )
     )
     result = await session.scalars(stmt)
     return result.all()

@@ -16,7 +16,7 @@ from .admin_subcription import (
 )
 from .edit_name_admin import change_name
 from .edit_desc_subs_admin import change_desc
-from .edit_channel_subsc_admin import change_channel, get_channels
+from .edit_channel_subsc_admin import change_channel, get_channels, get_channel
 from .hide_subscriptions import hide_subs
 from .recover_subscriptions import recover_subs
 from .delete_subscription import delete_subs

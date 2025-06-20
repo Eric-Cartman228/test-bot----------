@@ -62,15 +62,13 @@ async def watch_list_of_users(callback: CallbackQuery, session: AsyncSession):
         else:
             subs_text = "- Подписки нет"
 
-        await callback.message.answer(
-            f"""{i}. Пользователь: {username}
-- ID пользователя: {user_id}
-- Телефон: {phone}
-- Gmail: {email}
-{subs_text}"""
-        )
-
-    # После вывода текста — готовим и отправляем файл
+        # await callback.message.answer(
+        # f"""{i}. Пользователь: {username}
+    # - ID пользователя: {user_id}
+    # - Телефон: {phone}
+    # - Gmail: {email}
+    # {subs_text}"""
+    # )
     await send_users_file(callback, data)
 
 

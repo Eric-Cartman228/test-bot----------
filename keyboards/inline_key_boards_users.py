@@ -1,5 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from services import get_subscriptions, get_channels_for_last_step
+from services import (
+    get_subscriptions,
+    get_channels_for_last_step,
+    get_user_subscriptions,
+)
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -50,8 +54,8 @@ last_kb_programms = InlineKeyboardMarkup(
 
 
 # user`s subscriptions
-async def user_subscription_checker_kb(session: AsyncSession):
-    all_subscriptions_visiable = await get_subscriptions(session)
+async def user_subscription_checker_kb(user_id: int, session: AsyncSession):
+    all_subscriptions_visiable = await get_user_subscriptions(user_id, session)
     keyboard = InlineKeyboardBuilder()
     for subscription in all_subscriptions_visiable:
         keyboard.row(

@@ -202,6 +202,7 @@ back_but_govern_of_users = back_but = InlineKeyboardMarkup(
     ]
 )
 
+
 back_but_edit_desc = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Назад", callback_data="control_of_subs")]
@@ -240,3 +241,12 @@ async def statistic_kb_builder(session: AsyncSession):
 #         [InlineKeyboardButton(text="Назад", callback_data="govern_of_users")],
 #     ]
 # )
+
+
+get_back_to_list_dist = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data="distribution")]]
+)
+
+get_back_to_all_users = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(text="Назад", callback_data="all_users")]]
+)

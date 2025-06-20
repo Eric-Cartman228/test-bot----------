@@ -17,7 +17,7 @@ router = Router()
 @router.callback_query(F.data == "edit_sub_desc")
 async def send_sub_desc(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    await callback.message.answer(
+    await callback.message.edit_text(
         f'Пожалуйста,введите новое описание для\nподписки "{data['sub_name']}"'
     )
     await state.set_state(EditDesc.desc)

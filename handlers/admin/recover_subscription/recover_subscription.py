@@ -21,7 +21,7 @@ router = Router()
 
 @router.callback_query(F.data == "recover_subs")
 async def recover_subs_kb(callback: CallbackQuery, session: AsyncSession):
-    await callback.message.answer(
+    await callback.message.edit_text(
         "Выберите подписку,которую хотите\nвосстановить:",
         reply_markup=await kb_hide_subscriptions(session),
     )
@@ -34,7 +34,7 @@ async def get_name_of_hidden_subsc(
     sub_name = callback.data.replace("make_sub_visible:", "")
     await recover_subs(sub_name, session)
     await state.update_data(sub_name=sub_name)
-    await callback.message.answer(
+    await callback.message.edit_text(
         f"Подписка «{sub_name}» успешно\nвосстановлена и восстановлена и снова доступна\n пользователям.",
         reply_markup=back_but_for_recover_subscription,
     )

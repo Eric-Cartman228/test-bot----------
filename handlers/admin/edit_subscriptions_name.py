@@ -27,7 +27,7 @@ async def edit_subscription(callback: CallbackQuery, state: FSMContext):
     # sub_name = callback.data.replace("edit_subscriptions:", "")
     sub_name = callback.data.replace("edit_subscriptions:", "")
     await state.update_data(sub_name=sub_name)
-    await callback.message.answer(
+    await callback.message.edit_text(
         f"Что вы хотите изменить в подписке\n«{sub_name}»",
         reply_markup=edit_kb_sub_name,
     )

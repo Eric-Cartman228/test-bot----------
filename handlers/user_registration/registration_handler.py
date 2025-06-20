@@ -38,9 +38,9 @@ async def cmd_start(message: Message, state: FSMContext, session: AsyncSession):
 
 @router.message(UserState.name)
 async def get_name(message: Message, state: FSMContext):
-    name = message.text
-    if name.isalpha():
-        await state.update_data(name=message.text)
+    name = message.text.strip()
+    if all(part.isalpha() for part in name.split()):
+        await state.update_data(name=name)
         await message.answer(
             "Спасибо! Теперь, пожалуйста, укажите ваш Email-адрес для связи:"
         )
@@ -63,10 +63,6 @@ async def get_phone_number(message: Message, state: FSMContext, session: AsyncSe
         await state.update_data(phone_number=message.text)
         data = await state.get_data()
         await state.clear()
-        await message.answer(
-            f"""Name:{data['name']}.\nEmail:{data['email']}.\nPhone number:{data['phone_number']}""",
-            reply_markup=main_kb_usesr,
-        )
         await create_user(
             message.from_user.id,
             message.from_user.username,
@@ -78,3 +74,7 @@ async def get_phone_number(message: Message, state: FSMContext, session: AsyncSe
     else:
         await message.answer("Ошибка!Введите ваш номер телефона!")
         return
+    await message.answer(
+        "👋 Добро пожаловать! Здесь вы можете узнать о подписках на наши программы и связаться с техподдержкой для их приобретения. Выберите нужное действие:",
+        reply_markup=main_kb_usesr,
+    )

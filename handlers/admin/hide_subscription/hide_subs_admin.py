@@ -19,7 +19,7 @@ router = Router()
 
 @router.callback_query(F.data == "hide_subs")
 async def hide_subs_kb(callback: CallbackQuery, session: AsyncSession):
-    await callback.message.answer(
+    await callback.message.edit_text(
         "Выберите подписку,которую хотите\nскрыть:",
         reply_markup=await kb_not_hide_subscriptions(session),
     )
@@ -32,7 +32,7 @@ async def get_name_of_hidden_subsc(
     sub_name = callback.data.replace("hide_subscriptions:", "")
     await hide_subs(sub_name, session)
     await state.update_data(sub_name=sub_name)
-    await callback.message.answer(
+    await callback.message.edit_text(
         f"Подписка «{sub_name}»\nуспешно скрыта.Подписка будет\nнедоступна пользователям,но вся статистика сохранится. ",
         reply_markup=back_but_for_hide_subscription,
     )

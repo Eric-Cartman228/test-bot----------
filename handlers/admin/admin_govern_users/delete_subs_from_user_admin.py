@@ -37,7 +37,7 @@ async def get_id_username(message: Message, state: FSMContext, session: AsyncSes
         await state.clear()
         await state.update_data(id=message.text)
         data = await state.get_data()
-        await message.answer(
+        await message.edit_text(
             f"Текущие подписки пользователя.Выберите ту,которую хотите удалить.",
             reply_markup=await delete_subsc_from_user_admin_kb(
                 int(data["id"]), session

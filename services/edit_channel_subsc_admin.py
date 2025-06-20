@@ -19,3 +19,10 @@ async def change_channel(new_channel: str, sub_name: str, session: AsyncSession)
 async def get_channels(session: AsyncSession):
     old_channels = await session.scalars(select(Subcription.channel_id))
     return list(old_channels)
+
+
+async def get_channel(sub_name: str, session: AsyncSession):
+    old_channels = await session.scalars(
+        select(Subcription.channel_id).where(Subcription.name == sub_name)
+    )
+    return list(old_channels)

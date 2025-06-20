@@ -17,11 +17,16 @@ router = Router()
 async def check_handler(
     callback: CallbackQuery, state: FSMContext, session: AsyncSession
 ):
+    from main import bot
+
     sub_name = callback.data.replace("user_subs:", "")
     await state.update_data(sub_name=sub_name)
     channels = (await get_channels_for_last_step(sub_name, session))[0]
     print(channels)
-    subsc = [f"{1+i}.Канал {i+1}" for i, channel in enumerate(channels)]
+    subsc = [
+        f"{1+i}.Канал {i+1}: {(await bot.get_chat(channel)).username}"
+        for i, channel in enumerate(channels)
+    ]
     text = (
         f"Подписка: {sub_name}\n\n"
         + "Включенные каналы:\n"
