@@ -36,4 +36,5 @@ from .inline_key_boards_users import (
     user_subscription_checker_kb,
     user_subsc_last_kb_do_not_have_subs,
     user_channel_last_kb,
+    user_notification_channels,
 )

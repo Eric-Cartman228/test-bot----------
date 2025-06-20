@@ -15,12 +15,14 @@ from handlers.admin import admin_router
 from aiogram import Bot, Dispatcher
 from core import BOT_TOKEN
 
+from services import start_scheduler
+
 
 @asynccontextmanager
 async def lifespan():
     async with db_helper.engine.begin() as conn:
         # Optional: drop all tables
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     try:
         yield
@@ -37,6 +39,8 @@ async def on_startup(dispatcher: Dispatcher):
     dispatcher["lifespan_cm"] = lifespan()
     await dispatcher["lifespan_cm"].__aenter__()
     print("Db initialized")
+
+    start_scheduler(db_helper.session_maker, asyncio.get_running_loop())
 
 
 @dp.shutdown()

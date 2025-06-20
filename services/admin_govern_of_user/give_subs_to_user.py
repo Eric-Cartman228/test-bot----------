@@ -57,3 +57,15 @@ async def insert_subs_from_table(data_list: list, session: AsyncSession):
         session.add(new_sub)
 
     await session.commit()
+
+
+async def get_user_id(user_value: any, session: AsyncSession):
+    user_id = await session.scalar(
+        select(User.id).where(
+            (User.username == user_value)
+            | (User.phone_number == user_value)
+            | (User.email == user_value)
+            | (User.name == user_value)
+        )
+    )
+    return user_id

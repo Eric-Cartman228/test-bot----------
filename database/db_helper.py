@@ -22,6 +22,7 @@ class DatabaseHelper:
             autocommit=False,
             expire_on_commit=False,
         )
+        self.session_maker = self.session_factory
 
     def get_scoped_session(self):
         session = async_scoped_session(

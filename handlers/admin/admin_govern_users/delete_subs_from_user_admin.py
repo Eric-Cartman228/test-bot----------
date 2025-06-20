@@ -50,7 +50,6 @@ async def get_id_username(message: Message, state: FSMContext, session: AsyncSes
         await state.clear()
         id = await get_user_id_by_username(message.text, session)
         await state.update_data(id=id)
-        data = await state.get_data()
         await message.answer(
             f"Текущие подписки пользователя.Выберите ту,которую хотите удалить.",
             reply_markup=await delete_subsc_from_user_admin_kb(id, session),
@@ -61,9 +60,11 @@ async def get_id_username(message: Message, state: FSMContext, session: AsyncSes
 async def get_sub_name(
     callback: CallbackQuery, state: FSMContext, session: AsyncSession
 ):
+    data = await state.get_data()
+    user_id = data["id"]
     sub_name = callback.data.replace("del_subsc_users:", "")
     await state.update_data(sub_name=sub_name)
-    await make_null(int(sub_name), session)
+    await make_null(int(sub_name), int(user_id), session)
     await state.clear()
     await callback.message.edit_text(
         f"Подписка {sub_name} успешно удалена у пользователя",

@@ -110,3 +110,26 @@ async def user_channel_last_kb(name: str, session: AsyncSession):
         InlineKeyboardButton(text="🔙Назад", callback_data="my_subcription"),
     )
     return keyboard.as_markup()
+
+
+async def user_notification_channels(name: str, session: AsyncSession):
+    from main import bot
+
+    all_channels_last_step = await get_channels_for_last_step(name, session)
+    channels = all_channels_last_step[0]
+    keyboard = InlineKeyboardBuilder()
+    for i in range(len(channels)):
+        channel = await bot.get_chat(chat_id=channels[i])
+        keyboard.row(
+            InlineKeyboardButton(
+                text=f"Канал {i+1}",
+                url=f"https://t.me/{channel.username}",
+            )
+        )
+    keyboard.row(
+        InlineKeyboardButton(
+            text="💬Связаться с тех.поддержкой",
+            url="https://t.me/EvaristeGalois1811",
+        ),
+    )
+    return keyboard.as_markup()

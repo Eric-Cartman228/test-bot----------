@@ -8,7 +8,12 @@ import pandas as pd
 
 from states import GetId
 
-from services import check_func, chenck_func_user_name, get_user_id_by_username
+from services import (
+    check_func,
+    chenck_func_user_name,
+    get_user_id_by_username,
+    get_user_id,
+)
 
 from services.admin_govern_of_user import insert_subs_from_table
 
@@ -16,7 +21,7 @@ from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from keyboards import kb_list_subscriptions
+from keyboards import kb_list_subscriptions, user_notification_channels
 
 from services import insert_subs
 
@@ -104,7 +109,7 @@ async def get_id(message: Message, state: FSMContext, session: AsyncSession):
             await message.answer("Отправленная таблица неправильная!")
             os.remove(dest)
             return
-        data_list, user_col_name = extract_data_as_list_of_dicts(file_excel)
+        data_list = extract_data_as_list_of_dicts(file_excel)
         if data_list is None:
             await message.answer(
                 "Отправленная таблица неправильная! Обязательные колонки отсутствуют."
@@ -116,6 +121,9 @@ async def get_id(message: Message, state: FSMContext, session: AsyncSession):
             "Подписка успешно назначена всем пользователям из файла.",
             reply_markup=back_but_govern_of_users,
         )
+        for user in data_list:
+            user_id = await get_user_id(user["user_value"], session)
+            await send_to_user_notification(user_id, user["sub_name"], session)
 
 
 @router.callback_query(F.data.startswith("add_to_chosen_tarrifs:"))
@@ -160,6 +168,7 @@ async def state_for_days(message: Message, state: FSMContext, session: AsyncSess
         f"Подписка успешно назначена пользователю на {days} дней.",
         reply_markup=back_button_for_give_subs,
     )
+    await send_to_user_notification(int(tg_id), list_of_chosen_tarrifs, session)
 
 
 @router.callback_query(F.data.endswith("days"))
@@ -174,6 +183,7 @@ async def catch_days(callback: CallbackQuery, state: FSMContext, session: AsyncS
         f"Подписка успешно назначена пользователю на {nums_days} дней.",
         reply_markup=back_button_for_give_subs,
     )
+    await send_to_user_notification(int(tg_id), list_of_chosen_tarrifs, session)
 
 
 def extract_data_as_list_of_dicts(df):
@@ -207,4 +217,17 @@ def extract_data_as_list_of_dicts(df):
             }
         )
 
-    return result, user_col_name
+    return result
+
+
+async def send_to_user_notification(
+    user_id: int, list_of_sub_names: list, session: AsyncSession
+):
+    from main import bot
+
+    for sub in list_of_sub_names:
+        await bot.send_message(
+            chat_id=user_id,
+            text=f"🎉 Поздравляем! Вы успешно получили подписку «{sub}».\n\nТеперь у вас есть доступ к следующим каналам/группам👇:",
+            reply_markup=await user_notification_channels(sub, session),
+        )
