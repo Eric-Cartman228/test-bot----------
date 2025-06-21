@@ -31,7 +31,7 @@ async def add_name(message: Message, state: FSMContext):
 async def add_description(message: Message, state: FSMContext):
     await state.update_data(description=message.text)
     await message.answer(
-        "Отлично! Теперь добавьте этого бота в\n администаторы указанных каналов и\n отправьте ID ваших каналов через\n запятую."
+        "Отлично! Теперь добавьте этого бота в администаторы указанных каналов и отправьте ID ваших каналов через запятую."
     )
     await state.set_state(AddSubs.channel_id)
 

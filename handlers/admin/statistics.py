@@ -26,7 +26,7 @@ router = Router()
 @router.callback_query(F.data == "statistics")
 async def control_subs1(callback: CallbackQuery, session: AsyncSession):
     stats = await get_statistics(session)
-    await callback.message.answer(
+    await callback.message.edit_text(
         f"Количество пользователей: {stats['users_count']}\n"
         f"Количество подписчиков: {stats['subscribers_count']}\n"
         f"Количество завершающих подписку: {stats['ending_subs_count']}\n"
@@ -85,7 +85,7 @@ async def get_second_date(message: Message, state: FSMContext, session: AsyncSes
 async def choose_subs(
     callback: CallbackQuery, state: FSMContext, session: AsyncSession
 ):
-    await callback.message.answer(
+    await callback.message.edit_text(
         "Выберите параметры расширенной статистики за период:",
         reply_markup=await statistic_kb_builder(session),
     )

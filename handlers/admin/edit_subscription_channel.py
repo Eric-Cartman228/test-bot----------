@@ -25,8 +25,8 @@ async def send_sub_channel(
     channels_lines = []
     for i, channel in enumerate(ls_channels):
         chat = await bot.get_chat(channel)
-        username = chat.username or chat.title or f"ID {chat.id}"
-        channels_lines.append(f"{i + 1}. Канал {i + 1}: {username}")
+        title = chat.title or f"ID {chat.id}"
+        channels_lines.append(f"{i + 1}. Канал {i + 1}: {title}")
     text = (
         "Текущие каналы и группы для подписки\n"
         f"«{data['sub_name']}»:\n"

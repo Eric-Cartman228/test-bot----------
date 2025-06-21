@@ -50,8 +50,8 @@ async def get_name_of_sub_programm(
     for i, channel in enumerate(channels):
         try:
             chat = await bot.get_chat(channel)
-            username = chat.username or chat.title or f"ID {chat.id}"
-            channel_lines.append(f"- Канал {i + 1}: {username}")
+            title = chat.title or f"ID {chat.id}"
+            channel_lines.append(f"- Канал {i + 1}: {title}")
         except Exception as e:
             print(f"Не удалось получить чат {channel}: {e}")
             channel_lines.append(f"- Канал {i + 1}: (не найден или нет доступа)")

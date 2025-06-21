@@ -1,5 +1,9 @@
 from aiogram import F, Router
 
+from sqlalchemy import select
+
+from database.models import Subcription
+
 from aiogram.types import CallbackQuery, Message
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -65,8 +69,11 @@ async def get_sub_name(
     sub_name = callback.data.replace("del_subsc_users:", "")
     await state.update_data(sub_name=sub_name)
     await make_null(int(sub_name), int(user_id), session)
+    sub_id = int(sub_name)
+    stmt = select(Subcription.name).where(Subcription.id == sub_id)
+    sub_name_real = await session.scalar(stmt)
     await state.clear()
     await callback.message.edit_text(
-        f"Подписка {sub_name} успешно удалена у пользователя",
+        f"Подписка {sub_name_real} успешно удалена у пользователя",
         reply_markup=back_but_govern_of_users,
     )

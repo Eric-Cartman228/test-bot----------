@@ -110,18 +110,18 @@ async def send_users_file(callback: CallbackQuery, data):
         file = FSInputFile(local_filename)
         success = await send_file_with_retries(callback, file, attempts=3)
 
-        if success:
-            await callback.message.answer(
-                f"Файл успешно отправлен. Локальная копия сохранена: {local_filename}"
-            )
-        else:
-            await callback.message.answer(
-                f"⚠️ Не удалось отправить файл. Локальная копия сохранена: {local_filename}"
-            )
-    else:
-        await callback.message.answer(
-            f"Файл успешно отправлен. Локальная копия сохранена: {local_filename}"
-        )
+    #     if success:
+    #         await callback.message.answer(
+    #             f"Файл успешно отправлен. Локальная копия сохранена: {local_filename}"
+    #         )
+    #     else:
+    #         await callback.message.answer(
+    #             f"⚠️ Не удалось отправить файл. Локальная копия сохранена: {local_filename}"
+    #         )
+    # else:
+    #     await callback.message.answer(
+    #         f"Файл успешно отправлен. Локальная копия сохранена: {local_filename}"
+    #     )
 
     output.close()
     os.remove(file.filename)
