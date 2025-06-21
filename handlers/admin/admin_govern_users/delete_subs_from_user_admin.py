@@ -2,7 +2,7 @@ from aiogram import F, Router
 
 from sqlalchemy import select
 
-from database.models import Subcription
+from database.models import Subcription, UserSubcriptions
 
 from aiogram.types import CallbackQuery, Message
 
@@ -77,3 +77,41 @@ async def get_sub_name(
         f"Подписка {sub_name_real} успешно удалена у пользователя",
         reply_markup=back_but_govern_of_users,
     )
+    await send_user_delete_notification(sub_name_real, int(user_id), sub_id, session)
+
+
+async def send_user_delete_notification(
+    sub_name: str, user_id: int, sub_id: int, session: AsyncSession
+):
+    from main import bot
+
+    channels_list = await get_list_of_channels(sub_name, session)
+    channels_names = await format_channel_list(channels_list)
+    channels_text = ", ".join(channels_names)
+
+    await bot.send_message(
+        chat_id=user_id,
+        text=f"Ваша подписка <b>«{sub_name}»</b> истекла. Вы больше не имеете доступа к {channels_text}. Если хотите возобновить подписку, свяжитесь с техподдержкой.",
+        parse_mode="HTML",
+    )
+
+
+async def get_list_of_channels(sub_name: str, session: AsyncSession):
+
+    stmt = select(Subcription.channel_id).where(Subcription.name == sub_name)
+    channels = await session.scalar(stmt)
+    return channels  # channels — это list[str]
+
+
+async def format_channel_list(channel_ids: list[str]):
+    from main import bot
+
+    result = []
+    for channel_id in channel_ids:
+        try:
+            chat = await bot.get_chat(int(channel_id))
+            title = chat.title or f"ID {chat.id}"
+            result.append(title)
+        except Exception:
+            result.append(f"ID {channel_id}")
+    return result

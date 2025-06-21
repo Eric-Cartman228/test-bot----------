@@ -122,8 +122,9 @@ async def get_id(message: Message, state: FSMContext, session: AsyncSession):
             reply_markup=back_but_govern_of_users,
         )
         for user in data_list:
+            print(data_list)
             user_id = await get_user_id(user["user_value"], session)
-            await send_to_user_notification(user_id, user["sub_name"], session)
+            await send_to_user_notification(user_id, [user["sub_name"]], session)
 
 
 @router.callback_query(F.data.startswith("add_to_chosen_tarrifs:"))

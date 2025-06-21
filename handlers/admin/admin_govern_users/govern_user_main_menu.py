@@ -69,21 +69,56 @@ async def destribution_handler(
 async def broadcast_handler_users(
     message: Message, state: FSMContext, session: AsyncSession
 ):
-    text = message.text
-    users_ids = await get_all_users(session)
-    await state.clear()
-    successful = 0
-    erros = 0
-    for user_id in users_ids:
-        try:
-            await message.bot.send_message(user_id, text=text)
-            successful += 1
-        except:
-            erros += 1
-    await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
-        reply_markup=get_back_to_list_dist,
-    )
+    if message.text:
+        text = message.text
+        users_ids = await get_all_users(session)
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_message(user_id, text=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.photo:
+        image = message.photo[-1].file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_photo(user_id, photo=image, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.video:
+        vid = message.video.file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_video(user_id, video=vid, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
 
 
 @router.callback_query(F.data == "without_subsc")
@@ -101,21 +136,56 @@ async def destribution_handler_without_subsc(
 async def broadcast_handler_users_without_subscription(
     message: Message, state: FSMContext, session: AsyncSession
 ):
-    text = message.text
-    await state.clear()
-    users_ids = await get_all_users_without_subc(session)
-    successful = 0
-    erros = 0
-    for user_id in users_ids:
-        try:
-            await message.bot.send_message(user_id, text=text)
-            successful += 1
-        except:
-            erros += 1
-    await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Пользователи без подписок'.",
-        reply_markup=get_back_to_list_dist,
-    )
+    if message.text:
+        text = message.text
+        await state.clear()
+        users_ids = await get_all_users_without_subc(session)
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_message(user_id, text=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Пользователи без подписок'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.photo:
+        image = message.photo[-1].file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_photo(user_id, photo=image, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.video:
+        vid = message.video.file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_video(user_id, video=vid, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
 
 
 @router.callback_query(F.data == "with_subsc")
@@ -131,18 +201,53 @@ async def destribution_handler_with_subsc(callback: CallbackQuery, state: FSMCon
 async def broadcast_handler_users_with_subscription(
     message: Message, state: FSMContext, session: AsyncSession
 ):
-    text = message.text
-    await state.clear()
-    users_ids = await get_all_users_with_subc(session)
-    successful = 0
-    erros = 0
-    for user_id in users_ids:
-        try:
-            await message.bot.send_message(user_id, text=text)
-            successful += 1
-        except:
-            erros += 1
-    await message.answer(
-        f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'С подпиской'.",
-        reply_markup=get_back_to_list_dist,
-    )
+    if message.text:
+        text = message.text
+        await state.clear()
+        users_ids = await get_all_users_with_subc(session)
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_message(user_id, text=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'С подпиской'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.photo:
+        image = message.photo[-1].file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_photo(user_id, photo=image, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
+    elif message.video:
+        vid = message.video.file_id
+        users_ids = await get_all_users(session)
+        text = message.caption
+        await state.clear()
+        successful = 0
+        erros = 0
+        for user_id in users_ids:
+            try:
+                await message.bot.send_video(user_id, video=vid, caption=text)
+                successful += 1
+            except:
+                erros += 1
+        await message.answer(
+            f"✅Рассылка успешно отправлена {successful} пользователям из сегмента 'Все пользователи'.",
+            reply_markup=get_back_to_list_dist,
+        )
