@@ -93,7 +93,7 @@ async def get_id(message: Message, state: FSMContext, session: AsyncSession):
         file_path = file.file_path
         dest = f"./{file_name}"
         await bot.download_file(file_path, dest)
-        await message.answer("файл успешно скачан")
+        # await message.answer("файл успешно скачан")
         file_excel = pd.read_excel(f"{file_name}")
         columns = file_excel.columns
         if not (

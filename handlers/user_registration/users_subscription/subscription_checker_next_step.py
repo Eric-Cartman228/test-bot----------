@@ -22,9 +22,8 @@ async def check_handler(
     sub_name = callback.data.replace("user_subs:", "")
     await state.update_data(sub_name=sub_name)
     channels = (await get_channels_for_last_step(sub_name, session))[0]
-    print(channels)
     subsc = [
-        f"{1+i}.Канал {i+1}: {(await bot.get_chat(channel)).username}"
+        f"{1+i}.Канал {i+1}: {(await bot.get_chat(channel)).title}"
         for i, channel in enumerate(channels)
     ]
     text = (
